@@ -1270,6 +1270,86 @@ body {
   background-color: #0056b3;
 }
 
+/* Live React Native Preview styles */
+.live-react-native-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.live-react-native-preview .preview-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.live-react-native-preview .preview-content {
+  flex: 1;
+  overflow: auto;
+  background-color: #ffffff;
+}
+
+.preview-app {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+.live-react-native-preview .preview-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 6px 16px;
+  flex-shrink: 0;
+}
+
+.preview-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.live-preview-error {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #dc3545;
+  padding: 40px 20px;
+}
+
+.live-preview-error h3 {
+  margin: 16px 0 8px;
+  color: #dc3545;
+}
+
+.live-preview-error p {
+  margin-bottom: 20px;
+  color: #6c757d;
+}
+
+.live-preview-error .retry-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.live-preview-error .retry-button:hover {
+  background-color: #c82333;
+}
+
 /* File upload styles */
 .file-upload-section {
   max-width: 600px;

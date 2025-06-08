@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, Smartphone, AlertCircle, Monitor, QrCode, RefreshCw } from 'lucide-react';
-import WorkingSnackPreview from './WorkingSnackPreview';
-import ReactNativeWebRenderer from './ReactNativeWebRenderer';
-import SimpleReactNativePreview from './SimpleReactNativePreview';
+import LiveReactNativePreview from './LiveReactNativePreview';
 import QRCodeGenerator from './QRCodeGenerator';
 
 const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, error, code }) => {
@@ -10,6 +8,12 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
   const [iframeLoading, setIframeLoading] = useState(true);
   const [iframeError, setIframeError] = useState(null);
   const iframeRef = useRef(null);
+
+  // Check if we're in production (Vercel) - skip Snack SDK dependencies
+  const isProduction = typeof window !== 'undefined' &&
+    (window.location.hostname.includes('vercel.app') ||
+     window.location.hostname.includes('netlify.app') ||
+     window.location.hostname !== 'localhost');
 
   // Handle iframe load events
   useEffect(() => {
@@ -95,7 +99,7 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
   const renderWebPreview = () => {
     return (
       <div className="web-preview-container">
-        <SimpleReactNativePreview code={code} />
+        <LiveReactNativePreview code={code} />
       </div>
     );
   };
@@ -105,7 +109,7 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
       <div className="mobile-preview-container">
         <div className="phone-frame">
           <div className="phone-screen">
-            <SimpleReactNativePreview code={code} />
+            <LiveReactNativePreview code={code} />
           </div>
           <div className="phone-home-indicator"></div>
         </div>
