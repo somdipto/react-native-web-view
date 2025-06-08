@@ -35,6 +35,13 @@ export const useSnack = (initialCode) => {
         setIsLoading(true);
         setError(null);
 
+        // Skip Snack initialization in production to avoid errors
+        if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+          console.log('Skipping Snack SDK in production environment');
+          setIsLoading(false);
+          return;
+        }
+
         console.log('Initializing Snack with code:', initialCode.substring(0, 100) + '...');
 
         // Create a new Snack instance

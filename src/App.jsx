@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, Suspense } from 'react';
 import Split from 'react-split';
-import { Code, Smartphone, Upload, Save, Share2 } from 'lucide-react';
+import { Code, Smartphone, Upload, Save, Share2, Loader2 } from 'lucide-react';
 
 import CodeEditor from './components/CodeEditor';
 import SnackPreview from './components/SnackPreview';
@@ -10,10 +10,20 @@ import DebugPanel from './components/DebugPanel';
 import { useSnack } from './hooks/useSnack';
 import { defaultCode } from './utils/defaultCode';
 
+// Loading component
+const LoadingFallback = () => (
+  <div className="loading-fallback">
+    <Loader2 className="loading-spinner" size={48} />
+    <h2>Loading React Native Web View...</h2>
+    <p>Setting up the development environment</p>
+  </div>
+);
+
 function App() {
   const [code, setCode] = useState(defaultCode);
   const [showUpload, setShowUpload] = useState(false);
   const [editorTheme, setEditorTheme] = useState('vs-dark');
+  const [appError, setAppError] = useState(null);
   
   const {
     snack,
@@ -72,15 +82,29 @@ function App() {
     setEditorTheme(prev => prev === 'vs-dark' ? 'light' : 'vs-dark');
   };
 
-  return (
-    <div className="app">
-      <header className="app-header">
-        <div className="header-left">
-          <div className="logo">
-            <Code size={24} />
-            <h1>React Native Web View</h1>
-          </div>
+  // Handle app-level errors
+  if (appError) {
+    return (
+      <div className="app-error">
+        <div className="app-error-content">
+          <h1>Application Error</h1>
+          <p>{appError}</p>
+          <button onClick={() => setAppError(null)}>Try Again</button>
         </div>
+      </div>
+    );
+  }
+
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <div className="app">
+        <header className="app-header">
+          <div className="header-left">
+            <div className="logo">
+              <Code size={24} />
+              <h1>React Native Web View</h1>
+            </div>
+          </div>
         
         <div className="header-actions">
           <button 
@@ -197,6 +221,7 @@ function App() {
         isLoading={isLoading}
       />
     </div>
+    </Suspense>
   );
 }
 

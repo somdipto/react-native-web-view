@@ -1080,6 +1080,196 @@ body {
   font-family: 'Courier New', monospace;
 }
 
+/* Error Boundary styles */
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.error-boundary-content {
+  max-width: 600px;
+  text-align: center;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.error-boundary .error-icon {
+  color: #dc3545;
+  margin-bottom: 20px;
+}
+
+.error-boundary h1 {
+  color: #343a40;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.error-boundary p {
+  color: #6c757d;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.error-details {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.error-details summary {
+  cursor: pointer;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.error-stack {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: #495057;
+}
+
+.error-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.reload-button,
+.retry-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.reload-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.reload-button:hover {
+  background-color: #0056b3;
+}
+
+.retry-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.retry-button:hover {
+  background-color: #545b62;
+}
+
+.error-help {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #dee2e6;
+  text-align: left;
+}
+
+.error-help p {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.error-help ul {
+  color: #6c757d;
+  padding-left: 20px;
+}
+
+.error-help li {
+  margin-bottom: 5px;
+}
+
+/* Loading fallback styles */
+.loading-fallback {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  text-align: center;
+}
+
+.loading-fallback .loading-spinner {
+  color: #0e639c;
+  margin-bottom: 20px;
+  animation: spin 1s linear infinite;
+}
+
+.loading-fallback h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.loading-fallback p {
+  color: #cccccc;
+  font-size: 16px;
+}
+
+/* App error styles */
+.app-error {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.app-error-content {
+  text-align: center;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+}
+
+.app-error-content h1 {
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.app-error-content p {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.app-error-content button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.app-error-content button:hover {
+  background-color: #0056b3;
+}
+
 /* File upload styles */
 .file-upload-section {
   max-width: 600px;
