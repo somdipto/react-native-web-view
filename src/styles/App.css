@@ -1350,6 +1350,213 @@ body {
   background-color: #c82333;
 }
 
+/* Working Preview styles */
+.working-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.working-preview.loading {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.working-preview .loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #6c757d;
+}
+
+.working-preview .loading-content h3 {
+  color: #495057;
+  margin: 0;
+}
+
+.working-preview .loading-content p {
+  color: #6c757d;
+  margin: 0;
+}
+
+.working-preview .preview-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.working-preview .preview-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #495057;
+}
+
+.working-preview .preview-actions {
+  display: flex;
+  align-items: center;
+}
+
+.working-preview .refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.working-preview .refresh-button:hover {
+  background-color: #0056b3;
+}
+
+.working-preview .preview-content {
+  flex: 1;
+  overflow: auto;
+  background-color: #ffffff;
+}
+
+.working-preview .preview-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 6px 16px;
+  flex-shrink: 0;
+}
+
+.working-preview .preview-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #6c757d;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Production Preview styles */
+.production-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.production-preview.loading {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.production-preview .loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #6c757d;
+}
+
+.production-preview .loading-spinner {
+  color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+.production-preview .loading-content h3 {
+  color: #495057;
+  margin: 0;
+  font-size: 18px;
+}
+
+.production-preview .loading-content p {
+  color: #6c757d;
+  margin: 0;
+  font-size: 14px;
+}
+
+.production-preview .preview-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.production-preview .preview-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.production-preview .preview-actions {
+  display: flex;
+  align-items: center;
+}
+
+.production-preview .refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.production-preview .refresh-button:hover {
+  background-color: #0056b3;
+}
+
+.production-preview .preview-content {
+  flex: 1;
+  overflow: auto;
+  background-color: #ffffff;
+}
+
+.production-preview .preview-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 8px 16px;
+  flex-shrink: 0;
+}
+
+.production-preview .preview-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
 /* File upload styles */
 .file-upload-section {
   max-width: 600px;

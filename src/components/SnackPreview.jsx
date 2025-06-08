@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, Smartphone, AlertCircle, Monitor, QrCode, RefreshCw } from 'lucide-react';
-import LiveReactNativePreview from './LiveReactNativePreview';
+import ProductionPreview from './ProductionPreview';
 import QRCodeGenerator from './QRCodeGenerator';
 
 const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, error, code }) => {
@@ -84,22 +84,11 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
     );
   }
 
-  if (!previewUrl && !webPreviewUrl) {
-    return (
-      <div className="preview-container waiting">
-        <div className="waiting-content">
-          <Smartphone className="phone-icon" size={48} />
-          <h3>Waiting for Preview</h3>
-          <p>Your React Native app will appear here once it's ready</p>
-        </div>
-      </div>
-    );
-  }
-
+  // Always show preview - don't wait for external URLs
   const renderWebPreview = () => {
     return (
       <div className="web-preview-container">
-        <LiveReactNativePreview code={code} />
+        <ProductionPreview code={code} />
       </div>
     );
   };
@@ -109,7 +98,7 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
       <div className="mobile-preview-container">
         <div className="phone-frame">
           <div className="phone-screen">
-            <LiveReactNativePreview code={code} />
+            <ProductionPreview code={code} />
           </div>
           <div className="phone-home-indicator"></div>
         </div>

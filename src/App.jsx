@@ -7,7 +7,6 @@ import SnackPreview from './components/SnackPreview';
 import FileUpload from './components/FileUpload';
 import ErrorDisplay from './components/ErrorDisplay';
 import DebugPanel from './components/DebugPanel';
-import { useSnack } from './hooks/useSnack';
 import { defaultCode } from './utils/defaultCode';
 
 // Loading component
@@ -25,57 +24,40 @@ function App() {
   const [editorTheme, setEditorTheme] = useState('vs-dark');
   const [appError, setAppError] = useState(null);
   
-  const {
-    snack,
-    isLoading,
-    error,
-    previewUrl,
-    webPreviewUrl,
-    setWebPreviewRef,
-    updateCode,
-    uploadFile,
-    saveSnack
-  } = useSnack(defaultCode);
+  // Simplified - no external Snack SDK dependencies
+  const [snackError, setSnackError] = useState(null);
+  const [isSnackLoading, setIsSnackLoading] = useState(false);
 
-  // Debounced code update to avoid too many API calls
-  const [updateTimeout, setUpdateTimeout] = useState(null);
-  
+  // Simple code update without external dependencies
   const handleCodeChange = useCallback((newCode) => {
     setCode(newCode);
-    
-    // Clear existing timeout
-    if (updateTimeout) {
-      clearTimeout(updateTimeout);
-    }
-    
-    // Set new timeout to update Snack after user stops typing
-    const timeout = setTimeout(() => {
-      updateCode(newCode);
-    }, 1000); // 1 second delay
-    
-    setUpdateTimeout(timeout);
-  }, [updateCode, updateTimeout]);
+    // Code updates are handled by the preview component directly
+  }, []);
 
   const handleFileUpload = useCallback((fileName, content) => {
-    uploadFile(fileName, content);
-  }, [uploadFile]);
-
-  const handleSave = async () => {
-    const result = await saveSnack();
-    if (result) {
-      alert('Snack saved successfully!');
+    // Update the main code if it's an App file
+    if (fileName.toLowerCase().includes('app.')) {
+      setCode(content);
     }
+  }, []);
+
+  const handleSave = () => {
+    // Simple save - copy code to clipboard
+    navigator.clipboard.writeText(code).then(() => {
+      alert('Code copied to clipboard!');
+    }).catch(() => {
+      alert('Failed to copy code');
+    });
   };
 
   const handleShare = () => {
-    const urlToShare = webPreviewUrl || previewUrl;
-    if (urlToShare) {
-      navigator.clipboard.writeText(urlToShare).then(() => {
-        alert('Snack URL copied to clipboard!');
-      }).catch(() => {
-        alert('Failed to copy URL. URL: ' + urlToShare);
-      });
-    }
+    // Share the current URL
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      alert('App URL copied to clipboard!');
+    }).catch(() => {
+      alert('Failed to copy URL');
+    });
   };
 
   const toggleTheme = () => {
@@ -116,21 +98,19 @@ function App() {
             Upload
           </button>
           
-          <button 
+          <button
             className="action-button"
             onClick={handleSave}
-            disabled={!snack}
-            title="Save Snack"
+            title="Copy Code"
           >
             <Save size={18} />
-            Save
+            Copy Code
           </button>
-          
+
           <button
             className="action-button"
             onClick={handleShare}
-            disabled={!previewUrl && !webPreviewUrl}
-            title="Share Snack"
+            title="Share App"
           >
             <Share2 size={18} />
             Share
@@ -146,11 +126,11 @@ function App() {
         </div>
       </header>
 
-      <ErrorDisplay error={error} />
+      <ErrorDisplay error={snackError} />
 
       {showUpload && (
         <div className="upload-panel">
-          <FileUpload 
+          <FileUpload
             onFileUpload={handleFileUpload}
             onCodeChange={setCode}
           />
@@ -192,20 +172,18 @@ function App() {
             <div className="panel-header">
               <Smartphone size={16} />
               <span>Live Preview</span>
-              {(previewUrl || webPreviewUrl) && (
-                <div className="panel-info">
-                  <span className="status-indicator online">●</span>
-                  <span>Connected</span>
-                </div>
-              )}
+              <div className="panel-info">
+                <span className="status-indicator online">●</span>
+                <span>Ready</span>
+              </div>
             </div>
             <div className="preview-container">
               <SnackPreview
-                previewUrl={previewUrl}
-                webPreviewUrl={webPreviewUrl}
-                setWebPreviewRef={setWebPreviewRef}
-                isLoading={isLoading}
-                error={error}
+                previewUrl=""
+                webPreviewUrl=""
+                setWebPreviewRef={() => {}}
+                isLoading={isSnackLoading}
+                error={snackError}
                 code={code}
               />
             </div>
@@ -214,11 +192,11 @@ function App() {
       </main>
 
       <DebugPanel
-        snack={snack}
-        previewUrl={previewUrl}
-        webPreviewUrl={webPreviewUrl}
-        error={error}
-        isLoading={isLoading}
+        snack={null}
+        previewUrl=""
+        webPreviewUrl=""
+        error={snackError}
+        isLoading={isSnackLoading}
       />
     </div>
     </Suspense>

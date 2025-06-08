@@ -20,7 +20,9 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
+    target: 'es2015',
+    minify: 'esbuild'
   },
   base: '/',
   define: {
