@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, Smartphone, AlertCircle, Monitor, QrCode, RefreshCw } from 'lucide-react';
-import ProductionPreview from './ProductionPreview';
+import SmartReactNativePreview from './SmartReactNativePreview';
 import QRCodeGenerator from './QRCodeGenerator';
 
 const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, error, code }) => {
@@ -88,7 +88,7 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
   const renderWebPreview = () => {
     return (
       <div className="web-preview-container">
-        <ProductionPreview code={code} />
+        <SmartReactNativePreview code={code} />
       </div>
     );
   };
@@ -98,7 +98,7 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
       <div className="mobile-preview-container">
         <div className="phone-frame">
           <div className="phone-screen">
-            <ProductionPreview code={code} />
+            <SmartReactNativePreview code={code} />
           </div>
           <div className="phone-home-indicator"></div>
         </div>
