@@ -228,49 +228,18 @@ const SmartReactNativePreview = ({ code }) => {
           );
         }
 
-        // Code info
+        // Subtle status indicator (much cleaner)
         elements.push(
-          React.createElement(View, {
-            key: 'code-info',
+          React.createElement(Text, {
+            key: 'status',
             style: {
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              padding: 15,
-              borderRadius: 8,
-              maxWidth: 350,
-              alignItems: 'center',
-              marginTop: 20
+              fontSize: 12,
+              color: '#95a5a6',
+              textAlign: 'center',
+              marginTop: 30,
+              fontStyle: 'italic'
             }
-          }, [
-            React.createElement(Text, {
-              key: 'code-label',
-              style: {
-                fontSize: 12,
-                fontWeight: 'bold',
-                color: '#2c3e50',
-                marginBottom: 5
-              }
-            }, '📝 Your Code:'),
-            React.createElement(Text, {
-              key: 'code-preview',
-              style: {
-                fontSize: 11,
-                color: '#7f8c8d',
-                textAlign: 'center',
-                fontFamily: 'monospace',
-                lineHeight: 1.4
-              }
-            }, code.substring(0, 120) + (code.length > 120 ? '...' : '')),
-            React.createElement(Text, {
-              key: 'edit-hint',
-              style: {
-                fontSize: 10,
-                color: '#95a5a6',
-                textAlign: 'center',
-                marginTop: 8,
-                fontStyle: 'italic'
-              }
-            }, '✨ Edit the code to see real-time changes!')
-          ])
+          }, '✨ Live React Native Preview')
         );
 
         // Main container
@@ -293,52 +262,73 @@ const SmartReactNativePreview = ({ code }) => {
     }
   }, [code]);
 
-  // Default demo when no code
+  // Clean default demo when no code
   const createDefaultDemo = () => {
     const [count, setCount] = useState(0);
-    
+
     return React.createElement(View, {
       style: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f8f9fa',
-        padding: 20,
+        backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: 40,
         minHeight: '400px'
       }
     }, [
       React.createElement(Text, {
         key: 'title',
-        style: { fontSize: 24, fontWeight: 'bold', marginBottom: 15, textAlign: 'center', color: '#2c3e50' }
-      }, '📱 React Native Web View'),
-      
+        style: {
+          fontSize: 32,
+          fontWeight: '700',
+          marginBottom: 12,
+          textAlign: 'center',
+          color: '#2c3e50',
+          letterSpacing: '-0.5px'
+        }
+      }, '🚀 React Native'),
+
       React.createElement(Text, {
         key: 'subtitle',
-        style: { fontSize: 16, color: '#7f8c8d', marginBottom: 20, textAlign: 'center' }
-      }, 'Start typing React Native code to see it live!'),
-      
+        style: {
+          fontSize: 18,
+          color: '#7f8c8d',
+          marginBottom: 40,
+          textAlign: 'center',
+          fontWeight: '400'
+        }
+      }, 'Start coding to see your app come to life'),
+
       React.createElement(TouchableOpacity, {
         key: 'button',
         style: {
-          backgroundColor: '#007AFF',
-          padding: 15,
-          borderRadius: 8,
-          marginBottom: 15
+          backgroundColor: '#667eea',
+          paddingHorizontal: 32,
+          paddingVertical: 16,
+          borderRadius: 12,
+          marginBottom: 20,
+          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)'
         },
         onPress: () => setCount(count + 1)
       }, React.createElement(Text, {
-        style: { color: 'white', fontWeight: 'bold', textAlign: 'center' }
-      }, `Demo Button (${count})`)),
-      
+        style: {
+          color: 'white',
+          fontWeight: '600',
+          textAlign: 'center',
+          fontSize: 16
+        }
+      }, `Try Me! (${count})`)),
+
       React.createElement(Text, {
         key: 'instructions',
         style: {
           fontSize: 14,
           color: '#95a5a6',
           textAlign: 'center',
-          fontStyle: 'italic'
+          fontStyle: 'italic',
+          marginTop: 20
         }
-      }, 'Write React Native code in the editor to see it rendered here!')
+      }, 'Write React Native code in the editor →')
     ]);
   };
 
@@ -353,11 +343,11 @@ const SmartReactNativePreview = ({ code }) => {
 
   if (!isReady) {
     return (
-      <div className="smart-preview loading">
+      <div className="preview-content-clean loading">
         <div className="loading-content">
-          <RefreshCw size={32} className="loading-spinner" />
-          <h3>Analyzing Your Code...</h3>
-          <p>Creating smart React Native preview</p>
+          <RefreshCw size={28} className="loading-spinner" />
+          <h3>Loading Preview</h3>
+          <p>Analyzing your React Native code...</p>
         </div>
       </div>
     );
@@ -365,51 +355,23 @@ const SmartReactNativePreview = ({ code }) => {
 
   if (error) {
     return (
-      <div className="smart-preview error">
+      <div className="preview-content-clean error">
         <div className="error-content">
-          <AlertCircle size={32} />
+          <AlertCircle size={28} />
           <h3>Preview Error</h3>
           <p>{error}</p>
           <button onClick={() => setError(null)} className="retry-button">
-            <RefreshCw size={16} />
-            Retry
+            Try Again
           </button>
         </div>
       </div>
     );
   }
 
+  // Clean preview without any headers or footers
   return (
-    <div className="smart-preview">
-      <div className="preview-header">
-        <div className="preview-status">
-          <CheckCircle size={16} style={{ color: '#28a745' }} />
-          <span>Smart Live Preview</span>
-        </div>
-        <div className="preview-actions">
-          <button 
-            onClick={() => {
-              setIsReady(false);
-              setTimeout(() => setIsReady(true), 500);
-            }}
-            className="refresh-button"
-          >
-            <Play size={14} />
-            Refresh
-          </button>
-        </div>
-      </div>
-      
-      <div className="preview-content">
-        {createSmartPreview && React.createElement(createSmartPreview)}
-      </div>
-      
-      <div className="preview-footer">
-        <div className="preview-info">
-          <Code size={14} />
-          <span>Smart React Native Parser • Real-time Updates</span>
-        </div>
-      </div>
+    <div className="preview-content-clean">
+      {createSmartPreview && React.createElement(createSmartPreview)}
     </div>
   );
 };
