@@ -4,10 +4,12 @@ import { Code, Smartphone, Upload, Save, Share2, Loader2 } from 'lucide-react';
 
 import CodeEditor from './components/CodeEditor';
 import SnackPreview from './components/SnackPreview';
+import SnackPoweredPreview from './components/SnackPoweredPreview';
 import FileUpload from './components/FileUpload';
 import ErrorDisplay from './components/ErrorDisplay';
 import DebugPanel from './components/DebugPanel';
 import { defaultCode } from './utils/defaultCode';
+import { useSnack } from './hooks/useSnack';
 
 // Loading component
 const LoadingFallback = () => (
@@ -23,15 +25,24 @@ function App() {
   const [showUpload, setShowUpload] = useState(false);
   const [editorTheme, setEditorTheme] = useState('vs-dark');
   const [appError, setAppError] = useState(null);
-  
-  // Simplified - no external Snack SDK dependencies
-  const [snackError, setSnackError] = useState(null);
-  const [isSnackLoading, setIsSnackLoading] = useState(false);
+  const [useSnackSDK, setUseSnackSDK] = useState(true); // Toggle between Snack SDK and manual conversion
 
-  // Simple code update without external dependencies
+  // Use the enhanced Snack SDK hook
+  const {
+    snack,
+    isLoading: isSnackLoading,
+    error: snackError,
+    previewUrl,
+    webPreviewUrl,
+    isOnline,
+    connectedClients,
+    setWebPreviewRef,
+  } = useSnack(code);
+
+  // Enhanced code update with Snack SDK integration
   const handleCodeChange = useCallback((newCode) => {
     setCode(newCode);
-    // Code updates are handled by the preview component directly
+    // Code updates are automatically handled by the useSnack hook
   }, []);
 
   const handleFileUpload = useCallback((fileName, content) => {
@@ -115,8 +126,17 @@ function App() {
             <Share2 size={18} />
             Share
           </button>
-          
-          <button 
+
+          <button
+            className={`action-button ${useSnackSDK ? 'active' : ''}`}
+            onClick={() => setUseSnackSDK(!useSnackSDK)}
+            title={`Switch to ${useSnackSDK ? 'Manual' : 'Snack SDK'} Preview`}
+          >
+            {useSnackSDK ? '🚀' : '⚙️'}
+            {useSnackSDK ? 'Snack SDK' : 'Manual'}
+          </button>
+
+          <button
             className="action-button theme-toggle"
             onClick={toggleTheme}
             title="Toggle theme"
@@ -173,30 +193,42 @@ function App() {
               <Smartphone size={16} />
               <span>Live Preview</span>
               <div className="panel-info">
-                <span className="status-indicator online">●</span>
-                <span>Ready</span>
+                <span className={`status-indicator ${isOnline ? 'online' : 'offline'}`}>●</span>
+                <span>{isOnline ? 'Connected' : 'Connecting...'}</span>
+                {connectedClients > 0 && (
+                  <span className="clients-count">({connectedClients} devices)</span>
+                )}
               </div>
             </div>
             <div className="preview-container">
-              <SnackPreview
-                previewUrl=""
-                webPreviewUrl=""
-                setWebPreviewRef={() => {}}
-                isLoading={isSnackLoading}
-                error={snackError}
-                code={code}
-              />
+              {useSnackSDK ? (
+                <SnackPoweredPreview
+                  code={code}
+                  onCodeChange={handleCodeChange}
+                />
+              ) : (
+                <SnackPreview
+                  previewUrl={previewUrl}
+                  webPreviewUrl={webPreviewUrl}
+                  setWebPreviewRef={setWebPreviewRef}
+                  isLoading={isSnackLoading}
+                  error={snackError}
+                  code={code}
+                />
+              )}
             </div>
           </div>
         </Split>
       </main>
 
       <DebugPanel
-        snack={null}
-        previewUrl=""
-        webPreviewUrl=""
+        snack={snack}
+        previewUrl={previewUrl}
+        webPreviewUrl={webPreviewUrl}
         error={snackError}
         isLoading={isSnackLoading}
+        isOnline={isOnline}
+        connectedClients={connectedClients}
       />
     </div>
     </Suspense>

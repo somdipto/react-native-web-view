@@ -73,8 +73,34 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
     );
   }
 
-  // Clean web preview without clutter
+  // Enhanced web preview with Snack SDK support
   const renderWebPreview = () => {
+    // If we have a webPreviewUrl from Snack SDK, use it
+    if (webPreviewUrl) {
+      return (
+        <div className="web-preview-container">
+          {iframeLoading && (
+            <div className="iframe-overlay">
+              <div className="loading-content">
+                <Loader2 className="loading-spinner" size={24} />
+                <h3>Loading Snack Preview</h3>
+                <p>Powered by Expo Snack SDK</p>
+              </div>
+            </div>
+          )}
+          <iframe
+            ref={iframeRef}
+            src={webPreviewUrl}
+            className="web-frame"
+            title="Expo Snack Preview"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads"
+            allow="geolocation; camera; microphone; clipboard-read; clipboard-write"
+          />
+        </div>
+      );
+    }
+
+    // Fallback to manual component conversion
     return (
       <div className="web-preview-container">
         <SmartReactNativePreview code={code} />
@@ -82,13 +108,33 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
     );
   };
 
-  // Simplified mobile preview
+  // Enhanced mobile preview with Snack SDK support
   const renderMobilePreview = () => {
     return (
       <div className="mobile-preview-container">
         <div className="phone-frame">
           <div className="phone-screen">
-            <SmartReactNativePreview code={code} />
+            {webPreviewUrl ? (
+              <>
+                {iframeLoading && (
+                  <div className="iframe-overlay">
+                    <div className="loading-content">
+                      <Loader2 className="loading-spinner" size={20} />
+                      <p>Loading...</p>
+                    </div>
+                  </div>
+                )}
+                <iframe
+                  ref={iframeRef}
+                  src={webPreviewUrl}
+                  className="mobile-frame"
+                  title="Expo Snack Mobile Preview"
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                />
+              </>
+            ) : (
+              <SmartReactNativePreview code={code} />
+            )}
           </div>
           <div className="phone-home-indicator"></div>
         </div>
@@ -98,6 +144,11 @@ const SnackPreview = ({ previewUrl, webPreviewUrl, setWebPreviewRef, isLoading, 
             <div className="qr-section">
               <h4>📱 Test on Device</h4>
               <p>Scan with Expo Go to test on your phone</p>
+              <div className="preview-url">
+                <a href={previewUrl} target="_blank" rel="noopener noreferrer">
+                  Open Snack
+                </a>
+              </div>
             </div>
           </div>
         )}
