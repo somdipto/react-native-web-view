@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Snack } from 'snack-sdk';
 
-// Enhanced useSnack hook with comprehensive Snack SDK integration
+// Pure Snack SDK hook - no manual component conversion
 export const useSnack = (initialCode) => {
   const [snack, setSnack] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,31 +14,32 @@ export const useSnack = (initialCode) => {
   const snackRef = useRef(null);
   const webPreviewRef = useRef(null);
   const initializationAttempts = useRef(0);
-  const maxRetries = 3;
+  const maxRetries = 2; // Reduced retries for faster feedback
 
   // Enhanced dependency detection from code
   const detectDependencies = useCallback((code) => {
     const dependencies = {};
 
-    // Common React Native dependencies
+    // Common React Native and Expo dependencies that work well with Snack
     const dependencyPatterns = [
-      { pattern: /from\s+['"]react-native-vector-icons/, dep: 'react-native-vector-icons' },
-      { pattern: /from\s+['"]@expo\/vector-icons/, dep: '@expo/vector-icons' },
-      { pattern: /from\s+['"]react-native-maps/, dep: 'react-native-maps' },
-      { pattern: /from\s+['"]react-native-camera/, dep: 'react-native-camera' },
-      { pattern: /from\s+['"]expo-camera/, dep: 'expo-camera' },
-      { pattern: /from\s+['"]expo-location/, dep: 'expo-location' },
-      { pattern: /from\s+['"]expo-permissions/, dep: 'expo-permissions' },
-      { pattern: /from\s+['"]expo-constants/, dep: 'expo-constants' },
-      { pattern: /from\s+['"]expo-linear-gradient/, dep: 'expo-linear-gradient' },
-      { pattern: /from\s+['"]react-native-gesture-handler/, dep: 'react-native-gesture-handler' },
-      { pattern: /from\s+['"]react-native-reanimated/, dep: 'react-native-reanimated' },
-      { pattern: /from\s+['"]@react-navigation/, dep: '@react-navigation/native' },
+      { pattern: /from\s+['"]@expo\/vector-icons/, dep: '@expo/vector-icons', version: '~13.0.0' },
+      { pattern: /from\s+['"]expo-camera/, dep: 'expo-camera', version: '~13.4.4' },
+      { pattern: /from\s+['"]expo-location/, dep: 'expo-location', version: '~16.1.0' },
+      { pattern: /from\s+['"]expo-constants/, dep: 'expo-constants', version: '~14.4.2' },
+      { pattern: /from\s+['"]expo-linear-gradient/, dep: 'expo-linear-gradient', version: '~12.3.0' },
+      { pattern: /from\s+['"]expo-font/, dep: 'expo-font', version: '~11.4.0' },
+      { pattern: /from\s+['"]expo-asset/, dep: 'expo-asset', version: '~8.10.1' },
+      { pattern: /from\s+['"]react-native-gesture-handler/, dep: 'react-native-gesture-handler', version: '~2.12.0' },
+      { pattern: /from\s+['"]react-native-reanimated/, dep: 'react-native-reanimated', version: '~3.3.0' },
+      { pattern: /from\s+['"]@react-navigation\/native/, dep: '@react-navigation/native', version: '^6.0.0' },
+      { pattern: /from\s+['"]@react-navigation\/stack/, dep: '@react-navigation/stack', version: '^6.0.0' },
+      { pattern: /from\s+['"]react-native-safe-area-context/, dep: 'react-native-safe-area-context', version: '4.6.3' },
+      { pattern: /from\s+['"]react-native-screens/, dep: 'react-native-screens', version: '~3.22.0' },
     ];
 
-    dependencyPatterns.forEach(({ pattern, dep }) => {
+    dependencyPatterns.forEach(({ pattern, dep, version }) => {
       if (pattern.test(code)) {
-        dependencies[dep] = 'latest';
+        dependencies[dep] = version;
       }
     });
 
@@ -73,7 +74,7 @@ export const useSnack = (initialCode) => {
         const detectedDependencies = detectDependencies(initialCode);
         console.log('Detected dependencies:', detectedDependencies);
 
-        // Enhanced Snack configuration
+        // Proper Snack SDK configuration for reliable web preview
         const snackConfig = {
           files: {
             'App.js': {
@@ -82,11 +83,9 @@ export const useSnack = (initialCode) => {
             },
           },
           dependencies: detectedDependencies,
-          sdkVersion: '50.0.0', // Updated to newer SDK version for better web support
+          sdkVersion: '49.0.0', // Use stable SDK version that works reliably with web
           name: 'React Native Web Editor',
-          description: 'Live React Native preview powered by Expo Snack',
-          // Enable web preview explicitly
-          platforms: ['ios', 'android', 'web'],
+          description: 'Live React Native preview powered by Expo Snack SDK',
         };
 
         console.log('Creating Snack with enhanced config:', snackConfig);
@@ -95,7 +94,7 @@ export const useSnack = (initialCode) => {
         snackRef.current = newSnack;
         setSnack(newSnack);
 
-        // Enhanced state listener with comprehensive state tracking
+        // Enhanced state listener with proper error handling
         const stateListener = (state, prevState) => {
           console.log('Snack state updated:', {
             url: state.url,
@@ -112,7 +111,7 @@ export const useSnack = (initialCode) => {
           setIsSaved(state.isSaved || false);
           setConnectedClients(Object.keys(state.connectedClients || {}).length);
 
-          // Handle URL updates
+          // Handle URL updates with validation
           if (state.url && state.url !== prevState?.url) {
             console.log('Preview URL updated:', state.url);
             setPreviewUrl(state.url);
@@ -123,14 +122,19 @@ export const useSnack = (initialCode) => {
             setWebPreviewUrl(state.webPreviewURL);
           }
 
-          // Handle errors
+          // Clear errors when state is healthy
+          if (state.online && !state.errors?.length && !state.error) {
+            setError(null);
+          }
+
+          // Handle errors with better messaging
           if (state.errors && state.errors.length > 0) {
-            const errorMessage = state.errors.map(e => e.message || e).join(', ');
+            const errorMessage = state.errors.map(e => e.message || e.toString()).join(', ');
             console.error('Snack errors:', state.errors);
-            setError(errorMessage);
+            setError(`Snack SDK Error: ${errorMessage}`);
           } else if (state.error && state.error !== prevState?.error) {
             console.error('Snack error:', state.error);
-            setError(state.error);
+            setError(`Snack Error: ${state.error}`);
           }
         };
 
@@ -140,13 +144,13 @@ export const useSnack = (initialCode) => {
         console.log('Setting Snack online...');
         await newSnack.setOnline(true);
 
-        // Enhanced initialization with better timeout and fallback handling
+        // Wait for Snack to be ready with proper timeout
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Snack initialization timeout')), 15000)
+          setTimeout(() => reject(new Error('Snack SDK initialization timeout after 20 seconds')), 20000)
         );
 
         try {
-          // Wait for initial state
+          // Wait for initial state with longer timeout for Snack SDK
           const state = await Promise.race([
             newSnack.getStateAsync(),
             timeoutPromise
@@ -156,74 +160,90 @@ export const useSnack = (initialCode) => {
 
           // Set initial URLs if available
           if (state.url) {
+            console.log('Got Snack URL:', state.url);
             setPreviewUrl(state.url);
           }
 
           if (state.webPreviewURL) {
+            console.log('Got web preview URL:', state.webPreviewURL);
             setWebPreviewUrl(state.webPreviewURL);
           }
 
-          // Enhanced fallback URL generation
-          if (!state.webPreviewURL) {
-            let fallbackUrl;
+          // If no web preview URL, wait a bit more for it to be generated
+          if (!state.webPreviewURL && state.url) {
+            console.log('Waiting for web preview URL to be generated...');
 
-            if (state.url) {
-              // Extract Snack ID from URL and create embedded web preview
-              const snackId = state.url.split('/').pop();
-              fallbackUrl = `https://snack.expo.dev/embedded/@snack/${snackId}?preview=true&platform=web&theme=light`;
-            } else {
-              // Create a new embedded Snack with the current code
-              const encodedCode = encodeURIComponent(initialCode);
-              const encodedDeps = encodeURIComponent(JSON.stringify(detectedDependencies));
-              fallbackUrl = `https://snack.expo.dev/embedded?preview=true&platform=web&theme=light&code=${encodedCode}&dependencies=${encodedDeps}&sdkVersion=50.0.0&name=${encodeURIComponent('React Native Web Editor')}`;
-            }
+            // Wait up to 10 more seconds for web preview URL
+            let attempts = 0;
+            const maxWaitAttempts = 20; // 10 seconds (500ms * 20)
 
-            console.log('Using enhanced fallback web preview URL:', fallbackUrl);
-            setWebPreviewUrl(fallbackUrl);
+            const waitForWebPreview = async () => {
+              while (attempts < maxWaitAttempts) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                const currentState = newSnack.getState();
+
+                if (currentState.webPreviewURL) {
+                  console.log('Web preview URL generated:', currentState.webPreviewURL);
+                  setWebPreviewUrl(currentState.webPreviewURL);
+                  break;
+                }
+                attempts++;
+              }
+
+              // If still no web preview URL, create fallback
+              if (attempts >= maxWaitAttempts && !newSnack.getState().webPreviewURL) {
+                console.log('Creating fallback web preview URL...');
+                const snackId = state.url.split('/').pop();
+                const fallbackUrl = `https://snack.expo.dev/embedded/@snack/${snackId}?preview=true&platform=web&theme=light`;
+                console.log('Fallback URL:', fallbackUrl);
+                setWebPreviewUrl(fallbackUrl);
+              }
+            };
+
+            waitForWebPreview();
           }
 
           setIsLoading(false);
-          console.log('Snack initialization completed successfully');
+          console.log('Snack SDK initialization completed successfully');
 
         } catch (timeoutError) {
-          console.warn('Snack initialization timed out, attempting fallback...');
+          console.warn('Snack SDK initialization timed out:', timeoutError.message);
 
           if (initializationAttempts.current < maxRetries) {
-            // Retry initialization
+            console.log(`Retrying Snack initialization (attempt ${initializationAttempts.current + 1}/${maxRetries})`);
             setTimeout(() => {
               initializeSnack();
-            }, 2000);
+            }, 3000);
             return;
           }
 
-          // Final fallback: create a working Snack embed URL
-          const encodedCode = encodeURIComponent(initialCode);
-          const encodedDeps = encodeURIComponent(JSON.stringify(detectedDependencies));
-          const fallbackWebUrl = `https://snack.expo.dev/embedded?preview=true&platform=web&theme=light&code=${encodedCode}&dependencies=${encodedDeps}&sdkVersion=50.0.0&name=${encodeURIComponent('React Native Web Editor')}`;
+          // Create a direct Snack embed URL as final fallback
+          console.log('Creating direct Snack embed URL as fallback...');
+          const fallbackWebUrl = `https://snack.expo.dev/embedded?preview=true&platform=web&theme=light&name=${encodeURIComponent('React Native Web Editor')}&sdkVersion=49.0.0`;
 
           console.log('Using final fallback URL:', fallbackWebUrl);
           setWebPreviewUrl(fallbackWebUrl);
           setIsLoading(false);
         }
       } catch (err) {
-        console.error('Failed to initialize Snack:', err);
+        console.error('Failed to initialize Snack SDK:', err);
 
         if (initializationAttempts.current < maxRetries) {
           // Retry with exponential backoff
-          const delay = Math.pow(2, initializationAttempts.current) * 1000;
-          console.log(`Retrying Snack initialization in ${delay}ms...`);
+          const delay = Math.pow(2, initializationAttempts.current) * 2000;
+          console.log(`Retrying Snack SDK initialization in ${delay}ms...`);
           setTimeout(() => {
             initializeSnack();
           }, delay);
           return;
         }
 
-        setError(err.message || 'Failed to initialize Snack');
+        setError(`Snack SDK initialization failed: ${err.message || 'Unknown error'}`);
         setIsLoading(false);
 
-        // Even on error, provide a fallback URL
-        const encodedCode = encodeURIComponent(initialCode);
-        const fallbackWebUrl = `https://snack.expo.dev/embedded?preview=true&platform=web&theme=light&code=${encodedCode}&sdkVersion=50.0.0&name=${encodeURIComponent('React Native Web Editor')}`;
+        // Provide a working fallback URL that doesn't require Snack SDK
+        console.log('Creating fallback Snack embed URL...');
+        const fallbackWebUrl = `https://snack.expo.dev/embedded?preview=true&platform=web&theme=light&name=${encodeURIComponent('React Native Web Editor')}&sdkVersion=49.0.0`;
         setWebPreviewUrl(fallbackWebUrl);
       }
     };
