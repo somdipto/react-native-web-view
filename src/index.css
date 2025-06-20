@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Monaco Editor Styling */
+.monaco-editor {
+  font-family: 'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+}
+
+.monaco-editor .view-lines {
+  font-family: 'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+}
+
+/* Resizable Panels */
+[data-panel-resize-handle-enabled] {
+  position: relative;
+}
+
+[data-panel-resize-handle-enabled]:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+[data-panel-resize-handle-enabled]:hover:before {
+  opacity: 1;
+}
+
+/* Snack Embed Styling */
+iframe[src*="snack.expo.dev"] {
+  border: none !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Button hover effects */
+.btn-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Gradient backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-border {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  padding: 2px;
+  border-radius: 8px;
+}
+
+.gradient-border > div {
+  background: white;
+  border-radius: 6px;
+}
+
+/* Focus states */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Code syntax highlighting improvements */
+.monaco-editor .mtk1 { color: #24292e; }
+.monaco-editor .mtk4 { color: #032f62; }
+.monaco-editor .mtk5 { color: #005cc5; }
+.monaco-editor .mtk6 { color: #d73a49; }
+.monaco-editor .mtk8 { color: #22863a; }
+.monaco-editor .mtk9 { color: #e36209; }
+
+/* Dark theme code highlighting */
+.monaco-editor.vs-dark .mtk1 { color: #d4d4d4; }
+.monaco-editor.vs-dark .mtk4 { color: #9cdcfe; }
+.monaco-editor.vs-dark .mtk5 { color: #569cd6; }
+.monaco-editor.vs-dark .mtk6 { color: #f92672; }
+.monaco-editor.vs-dark .mtk8 { color: #6a9955; }
+.monaco-editor.vs-dark .mtk9 { color: #ce9178; }
+
+img {
+  object-position: top;
+}
